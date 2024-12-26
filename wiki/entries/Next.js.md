@@ -1,0 +1,3 @@
+# Next.js
+
+**Next.js** is an [open-source](https://en.wikipedia.org/wiki/Open-source "Open-source")  [web development framework](https://en.wikipedia.org/wiki/Web_framework "Web framework") created by the private company [Vercel](https://en.wikipedia.org/wiki/Vercel "Vercel") providing [React](https://en.wikipedia.org/wiki/React_(JavaScript_library) "React (JavaScript library)")-based web applications with [server-side rendering](https://en.wikipedia.org/wiki/Server-side_rendering "Server-side rendering") and [static rendering](https://en.wikipedia.org/wiki/Static_rendering "Static rendering").

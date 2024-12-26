@@ -1,3 +1,6 @@
+import random
+import markdown2
+
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.urls import reverse
@@ -11,14 +14,15 @@ def index(request):
     })
 
 def entry(request, title):
-    if util.get_entry(title) == None:
+    content = util.get_entry(title)
+    if content is None:
         return render(request, "encyclopedia/error.html", {
             "message": "The requested page was not found."
         })
     else:
+        html_content = markdown2.markdown(content)
         return render(request, "encyclopedia/entry.html", {
-            
-            "entry": util.get_entry(title),
+            "entry": html_content,
             "title": title
         })
     
@@ -45,8 +49,10 @@ def create(request):
         title = request.POST.get("title")
         content = request.POST.get("content")
         
-        if util.get_entry(title) == None:
-            util.save_entry(title, content)
+        if util.get_entry(title) is None:
+            # Prepend title as markdown h1 header
+            markdown_content = f"# {title}\n\n{content}"
+            util.save_entry(title, markdown_content)
             return HttpResponseRedirect(reverse("entry", args=[title]))
         else:
             return render(request, "encyclopedia/error.html", {
@@ -54,3 +60,24 @@ def create(request):
             })
     else:
         return render(request, "encyclopedia/create.html")
+        
+def edit(request, title):
+    if request.method == "POST":
+        content = request.POST.get("content")
+        util.save_entry(title, content)
+        return HttpResponseRedirect(reverse("entry", args=[title]))
+    else:
+        content = util.get_entry(title)
+        if content is None:
+            return render(request, "encyclopedia/error.html", {
+                "message": "The requested page was not found."
+            })
+        return render(request, "encyclopedia/edit.html", {
+            "title": title,
+            "content": content  
+        })
+    
+def random_page(request):
+    entries = util.list_entries()
+    title = random.choice(entries)
+    return HttpResponseRedirect(reverse("entry", args=[title]))
